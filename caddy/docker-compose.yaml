@@ -5,15 +5,16 @@ services:
     image: caddy:latest
     container_name: caddy
     restart: unless-stopped
+    user: 993:989
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - /home/closure/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - /home/closure/caddy/site:/srv
-      - /home/closure/caddy/data:/data
-      - /home/closure/caddy/config:/config
+      - /opt/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /opt/caddy/site:/srv
+      - /opt/caddy/data:/data
+      - /opt/caddy/config:/config
 
 volumes:
   caddy_data:
