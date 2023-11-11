@@ -6,15 +6,17 @@ services:
     container_name: caddy
     restart: unless-stopped
     user: 993:989
+    environment:
+      - PUID=993
+      - PGID=989
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - /opt/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - /opt/caddy/site:/srv
-      - /opt/caddy/data:/data
-      - /opt/caddy/config:/config
+      - /home/closure/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /home/closure/docker/caddy/data:/data
+      - /home/closure/docker/caddy/config:/config
 
 volumes:
   caddy_data:
