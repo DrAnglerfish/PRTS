@@ -15,6 +15,11 @@ Web GUI for overview and management of docker environment.
 Lightweight, allows to easily manage docker containers,
 images, networks, volumes,...
 
+# Prerequisites
+
+* Make sure you create a `portainer` user and group with `sudo useradd --system portainer`
+* Replace the `user: UID:GID` in the docker compose with the UID:GID of your portainer user group, to find the UID and GID run `id portainer`
+
 # Files and directory structure
 
 ```
@@ -33,12 +38,26 @@ images, networks, volumes,...
 You only need to provide the files.</br>
 The directory is created by docker compose on the first run.
 
-# Give permissions to docker.sock
+> [!IMPORTANT]  
+> Once `sudo docker compose up -d` is ran, immediately run `sudo docker compose down` and then change the data folder ownership to `portainer` by using `sudo chown -R portainer:portainer data/` It should look like this in the example below using `ls -l`[^1]
+
+```
+total 8
+drwxr-xr-x 8 portainer portainer 4096 Nov 10 14:09 data
+-rw-r--r-- 1 portainer portainer  423 Nov 10 14:11 docker-compose.yaml
+
+```
+
+# Giving permissions to docker.sock
 
 > [!WARNING]  
 > Portainer will not work without this if you are using this docker compose setup
 
-For this container, since we set the user to 990:987 in the docker compose by running `sudo useradd --system portainer` and then `id portainer` we get the UID and GID of 990:987. However, /var/run/docker.sock proceeds to give us a permission error, so to fix this, we have to do `sudo setfacl -m u:portainer:rwx /var/run/docker.sock` then if we do `sudo docker logs portainer` we should get no errors at all. 
+For this container we set the user UID:GID, if we run `sudo docker logs portainer` we can see that /var/run/docker.sock is giving us permission errors, to fix this we can use the `setfacl` command which is installed by the `acl` package[^2].
+
+*`sudo setfacl -m u:portainer:rwx[^3] /var/run/docker.sock`
+
+After the command is ran, restart the container, and run `sudo docker logs portainer` you shouldn't have any more errors.
 
 # Reverse Proxy
 
@@ -59,10 +78,13 @@ portainer.example.com {
 
 # Update
 
-To manually update the container head into the portainer folder and run these commands:
+To manually update the container, head into the portainer folder and run these commands:
 
 - `sudo docker compose pull`
-- `sudo docker compose up -d --force-recreate --remove-orphans`[^1]
+- `sudo docker compose up -d --force-recreate --remove-orphans`[^4]
 - `sudo docker image prune`
 
-[^1]: You can run `sudo docker compose up -d` just by itself, however I like to do a clean refresh just to make sure.
+[^1]: In the example shown, I used `sudo chown -R portainer:portainer /home/yourname/docker/portainer` which set the whole folder to be owned by portainer. All you need is the data folder to be owned by portainer but I wanted to make sure that this whole entire folder was owned by portainer.</br>
+[^2]: I'm on Debian which was pre-installed for me on the "bookworm" release, so make sure you have `acl` installed on whatever distro you're using.</br>
+[^3]: I'm pretty sure you can set this to rw instead of rwx, but since Portainer is a docker manager I just gave it all permissions.</br>
+[^4]: You can run `sudo docker compose up -d` just by itself, however I like to do a clean refresh just to make sure.
