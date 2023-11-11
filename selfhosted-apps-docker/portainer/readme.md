@@ -33,10 +33,10 @@ images, networks, volumes,...
 You only need to provide the files.</br>
 The directory is created by docker compose on the first run.
 
-[!IMPORTANT]
-If using setting UID and GID for user in docker-compose
-
 # Give permissions to docker.sock
+
+> [!WARNING]  
+> Portainer will not work without this if you are using this docker compose setup
 
 For this container, since we set the user to 990:987 in the docker compose by running `sudo useradd --system portainer` and then `id portainer` we get the UID and GID of 990:987. However, /var/run/docker.sock proceeds to give us a permission error, so to fix this, we have to do `sudo setfacl -m u:portainer:rwx /var/run/docker.sock` then if we do `sudo docker logs portainer` we should get no errors at all. 
 
@@ -59,8 +59,10 @@ portainer.example.com {
 
 # Update
 
-Manual image update:
+To manually update the container head into the portainer folder and run these commands:
 
-- `docker-compose pull`</br>
-- `docker-compose up -d`</br>
-- `docker image prune`
+- `sudo docker compose pull`
+- `sudo docker compose up -d --force-recreate --remove-orphans`[^1]
+- `sudo docker image prune`
+
+[^1]: You can run `sudo docker compose up -d` just by itself, however I like to do a clean refresh just to make sure.
