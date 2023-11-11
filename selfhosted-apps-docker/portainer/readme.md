@@ -33,10 +33,12 @@ images, networks, volumes,...
 You only need to provide the files.</br>
 The directory is created by docker compose on the first run.
 
-[!NOTE]
+[!IMPORTANT]
+If using setting UID and GID for user in docker-compose
+
 # Give permissions to docker.sock
 
-For this container since we are using setting a user in the docker compose by running 'sudo useradd --system portainer' and then 'id portainer' we get the UID and GID of 990:987. However, /var/run/docker.sock proceeds to give us a permission error, so to fix this, we have to do 'sudo setfacl -m u:portainer:rw /var/run/docker.sock' then if we do 'sudo docker logs portainer' we should get no errors at all. 
+For this container, since we set the user to 990:987 in the docker compose by running `sudo useradd --system portainer` and then `id portainer` we get the UID and GID of 990:987. However, /var/run/docker.sock proceeds to give us a permission error, so to fix this, we have to do `sudo setfacl -m u:portainer:rwx /var/run/docker.sock` then if we do `sudo docker logs portainer` we should get no errors at all. 
 
 # Reverse Proxy
 
