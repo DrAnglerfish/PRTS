@@ -55,9 +55,10 @@ drwxr-xr-x 8 portainer portainer 4096 Nov 10 14:09 data
 
 For this container we set the user UID:GID, if we run `sudo docker logs portainer` we can see that /var/run/docker.sock is giving us permission errors, to fix this we can use the `setfacl` command which is installed by the `acl` package[^2].
 
-*`sudo setfacl -m u:portainer:rwx[^3] /var/run/docker.sock`
+* `sudo setfacl -m u:portainer:rwx /var/run/docker.sock`[^3]
 
-After the command is ran, restart the container, and run `sudo docker logs portainer` you shouldn't have any more errors.
+After the command is ran, restart the container, and run `sudo docker logs portainer` </br>
+You shouldn't see anymore errors that involve /var/run/docker.sock
 
 # Reverse Proxy
 
