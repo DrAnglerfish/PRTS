@@ -7,13 +7,16 @@ services:
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
+      - PUID=995
+      - PGID=991
     volumes:
       - /home/closure/docker/jellyfin/config:/config
       - /home/closure/docker/jellyfin/cache:/cache
       - /PRTS/jellyfin/anime:/anime
     restart: 'unless-stopped'
     ports:
-      - 8096:8096
+      - "8096:8096"
+      - "1900:1900/udp"
     runtime: nvidia
     deploy:
       resources:

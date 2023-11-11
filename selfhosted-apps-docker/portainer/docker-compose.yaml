@@ -4,6 +4,9 @@ services:
     container_name: portainer
     hostname: portainer
     user: 990:987
+    environment:
+      - PUID=990
+      - PGID=987
     command: -H unix:///var/run/docker.sock
     restart: unless-stopped
     privileged: true

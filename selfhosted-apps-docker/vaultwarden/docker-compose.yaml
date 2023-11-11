@@ -4,12 +4,16 @@ services:
   vaultwarden:
     image: 'vaultwarden/server:latest'
     container_name: vaultwarden
+    user: 991:988
     restart: 'unless-stopped'
+    environment:
+      - PUID=991
+      - PGID=988
     env_file:
       - settings.env
     volumes:
-      - /home/closure/vaultwarden/data:/data
-      - /home/closure/vaultwarden/web-vault:/web-vault
+      - /home/closure/docker/vaultwarden/data:/data
+      - /home/closure/docker/vaultwarden/web-vault:/web-vault
     ports:
       - '3012:3012'
     expose:

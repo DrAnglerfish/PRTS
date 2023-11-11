@@ -4,10 +4,13 @@ services:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     user: 994:990
+    environment:
+      - PUID=994
+      - PGID=990
     ports:
       - 3000:3000
     volumes:
-      - /home/closure/docker/homepage/config:/app//config # Make sure your local config directory exists
+      - /home/closure/docker/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
     restart: unless-stopped
 
