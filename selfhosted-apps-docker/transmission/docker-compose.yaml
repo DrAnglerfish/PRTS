@@ -1,0 +1,25 @@
+version: "2.1"
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=988
+      - PGID=985
+      - TZ=America/Los_Angeles
+      - USER=admin
+      - PASS=password
+    volumes:
+      - /home/closure/docker/transmission/data:/config
+      - /PRTS/transmission:/downloads
+      - /PRTS/transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+networks:
+  default:
+    name: caddy_net
+    external: true
