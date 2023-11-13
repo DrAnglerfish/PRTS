@@ -4,6 +4,7 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
+    hostname: homepage
     user: 994:990
     environment:
       - PUID=994
