@@ -4,7 +4,6 @@ services:
   caddy:
     image: caddy:latest
     container_name: caddy
-    restart: unless-stopped
     user: 993:989
     environment:
       - PUID=993
@@ -14,9 +13,10 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - /home/closure/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - /home/closure/docker/caddy/data:/data
-      - /home/closure/docker/caddy/config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data:/data
+      - ./config:/config
+    restart: unless-stopped
 
 volumes:
   caddy_data:
@@ -25,5 +25,5 @@ volumes:
 
 networks:
   default:
-    name: caddy_net
     external: true
+    name: caddy_net
