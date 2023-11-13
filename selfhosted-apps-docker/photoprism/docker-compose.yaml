@@ -1,18 +1,15 @@
-version: '3.5'
+version: "3.5"
 
 services:
   photoprism:
     image: photoprism/photoprism:latest
     container_name: photoprism
-    restart: unless-stopped
-    stop_grace_period: 10s
+    user: 985:982
     depends_on:
       - mariadb
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    ports:
-      - "2342:2342"
     environment:
       PHOTOPRISM_ADMIN_USER: "admin"                 # admin login username
       PHOTOPRISM_ADMIN_PASSWORD: "insecure"          # initial admin password (8-72 characters)
@@ -54,39 +51,36 @@ services:
       PHOTOPRISM_UMASK: 0002
       NVIDIA_VISIBLE_DEVICES: "all"
       NVIDIA_DRIVER_CAPABILITIES: "all"
-      user: "985:982"
-    devices:
-      - "/dev/nvidia-caps:/dev/nvidia-caps"
-      - "/dev/nvidia0:/dev/nvidia0"
-      - "/dev/nvidiactl:/dev/nvidiactl"
-      - "/dev/nvidia-modeset:/dev/nvidia-modeset"
-      - "/dev/nvidia-uvm:/dev/nvidia-uvm"
-      - "/dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools"
+    ports:
+      - "2342:2342"
     working_dir: "/photoprism"
     volumes:
-      - "./pictures:/photoprism/originals"               # Original media files (DO NOT REMOVE)
-      - "/PRTS/photoprism:/photoprism/originals/PRTS" # *Additional* media folders can be mounted like this
-      - "./storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
+      - ./pictures:/photoprism/originals                  # Original media files (DO NOT REMOVE)
+      - ./storage:/photoprism/storage                     # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
+      - /PRTS/photoprism:/photoprism/originals/PRTS      # *Additional* media folders can be mounted like this
+    devices:
+      - /dev/nvidia-caps:/dev/nvidia-caps
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvidia-modeset:/dev/nvidia-modeset
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools
+    runtime: nvidia
     deploy:
       resources:
         reservations:
           devices:
-            - driver: "nvidia"
-              count: 1
-              capabilities: [gpu]
+            - capabilities: [gpu]
+    restart: unless-stopped
 
   mariadb:
     image: mariadb:10.11
-    container_name: photoprism-mariadb
-    restart: unless-stopped
-    user: "985:982"
-    stop_grace_period: 5s
+    container_name: photoprism-db
+    user: 985:982
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
     command: mariadbd --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    volumes:
-      - "./database:/var/lib/mysql"
     environment:
       MARIADB_AUTO_UPGRADE: "1"
       MARIADB_INITDB_SKIP_TZINFO: "1"
@@ -94,6 +88,9 @@ services:
       MARIADB_USER: "photoprism"
       MARIADB_PASSWORD: "insecure"
       MARIADB_ROOT_PASSWORD: "insecure"
+    volumes:
+      - ./database:/var/lib/mysql
+    restart: unless-stopped
 
 networks:
   default:

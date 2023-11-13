@@ -1,4 +1,5 @@
 version: "2.1"
+
 services:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -9,14 +10,14 @@ services:
       - TZ=America/Los_Angeles
       - USER=admin
       - PASS=password
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
     volumes:
-      - /home/closure/docker/transmission/data:/config
+      - ./data:/config
       - /PRTS/transmission:/downloads
       - /PRTS/transmission/watch:/watch
-    ports:
-      - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
     restart: unless-stopped
 
 networks:

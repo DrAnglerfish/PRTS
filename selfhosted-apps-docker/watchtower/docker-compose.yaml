@@ -1,19 +1,17 @@
-version: '3'
-services:
+version: "3"
 
+services:
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
     hostname: watchtower
-    user: 989:986
-    restart: unless-stopped
     environment:
-      - PUID=989
-      - PGID=986
       - WATCHTOWER_SCHEDULE=0 0 0 * * SAT
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_TIMEOUT=30s
       - WATCHTOWER_DEBUG=false
       - WATCHTOWER_INCLUDE_STOPPED=false
+      - TZ=America/Los_Angeles
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

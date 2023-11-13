@@ -1,23 +1,24 @@
-version: '3'
+version: "3"
 
 services:
   vaultwarden:
-    image: 'vaultwarden/server:latest'
+    image: vaultwarden/server:latest
     container_name: vaultwarden
     user: 991:988
-    restart: 'unless-stopped'
     environment:
       - PUID=991
       - PGID=988
+      - TZ=America/Los_Angeles
     env_file:
       - settings.env
-    volumes:
-      - /home/closure/docker/vaultwarden/data:/data
-      - /home/closure/docker/vaultwarden/web-vault:/web-vault
     ports:
-      - '3012:3012'
+      - "3012:3012"
     expose:
       - "80"
+    volumes:
+      - ./data:/data
+      - ./web-vault:/web-vault
+    restart: unless-stopped
 
 networks:
   default:

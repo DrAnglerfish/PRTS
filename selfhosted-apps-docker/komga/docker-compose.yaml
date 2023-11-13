@@ -1,9 +1,17 @@
-version: '3.3'
+version: "3.3"
 
 services:
   komga:
     image: gotson/komga
     container_name: komga
+    user: 984:981
+    environment:
+      - PUID=984
+      - PGID=981
+      - TZ=America/Los_Angeles
+      - JAVA_TOOL_OPTIONS=-Xmx8g
+    ports:
+      - "25600:25600"
     volumes:
       - type: bind
         source: ./config
@@ -14,14 +22,6 @@ services:
       - type: bind
         source: /PRTS/komga/manga
         target: /manga
-    ports:
-      - 25600:25600
-    user: "984:981"
-    environment:
-      - PUID=984
-      - PGID=981
-      - TZ=America/Los_Angeles
-      - JAVA_TOOL_OPTIONS=-Xmx8g
     restart: unless-stopped
 
 networks:
