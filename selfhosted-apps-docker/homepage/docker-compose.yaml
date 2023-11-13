@@ -1,4 +1,5 @@
 version: "3.3"
+
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -8,9 +9,11 @@ services:
       - PUID=994
       - PGID=990
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
-      - /home/closure/docker/homepage/config:/app/config # Make sure your local config directory exists
+      - ./config:/app/config
+      - ./icons:/app/public/icons
+      - ./images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
     restart: unless-stopped
 
