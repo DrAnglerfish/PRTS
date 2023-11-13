@@ -1,0 +1,16 @@
+services:
+  nginx:
+    image: nginx
+    container_name: website_domain_name
+    environment:
+      - PUID=987
+      - PGID=984
+    volumes:
+      - ./websites/domain:/usr/share/nginx/html
+    restart: unless-stopped
+
+networks:
+  default:
+    name: caddy_net
+    external: true
+
