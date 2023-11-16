@@ -4,6 +4,7 @@ services:
   vaultwarden:
     image: vaultwarden/server:latest
     container_name: vaultwarden
+    hostname: vaultwarden
     user: 991:988
     environment:
       - PUID=991

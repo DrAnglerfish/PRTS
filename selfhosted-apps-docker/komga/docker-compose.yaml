@@ -4,6 +4,7 @@ services:
   komga:
     image: gotson/komga
     container_name: komga
+    hostname: komga
     user: 984:981
     environment:
       - PUID=984

@@ -2,6 +2,7 @@ services:
   nginx:
     image: nginx
     container_name: website_domain_name
+    hostname: website_domain_name
     environment:
       - PUID=987
       - PGID=984
