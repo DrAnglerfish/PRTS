@@ -104,6 +104,5 @@ http:
         cloudflarewarp:                                                                  # For Cloudflare real IP
           disableDefault: false                                                          # For Cloudflare real IP
           trustip:                                                                       # For Cloudflare real IP
-            - "2400:cb00::/32"                               
-
+            - "2400:cb00::/32"
 

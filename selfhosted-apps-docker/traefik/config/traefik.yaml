@@ -69,7 +69,7 @@ providers:
   file:
     directory: /etc/traefik/conf/
     watch: true
-          
+
 certificatesResolvers:
   cloudflare:
     acme:
@@ -83,8 +83,6 @@ certificatesResolvers:
         resolvers:
           - "1.1.1.1:53"
           - "1.0.0.1:53"
-
-
 
 log:
   level: INFO
@@ -104,8 +102,6 @@ accessLog:
       defaultMode: drop # drop all headers per default
       names:
           User-Agent: keep # log user agent strings
-
-
 
 experimental:
   plugins:

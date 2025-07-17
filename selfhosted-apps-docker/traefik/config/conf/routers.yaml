@@ -1,0 +1,9 @@
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.prts.live`)"
+      service: "api@internal"
+      middlewares:
+        - "traefik-auth"
+        - "secure-headers@file"
+      tls: true

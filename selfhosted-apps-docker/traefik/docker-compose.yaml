@@ -35,12 +35,6 @@ services:
       - ./config/certs:/etc/traefik/certs/
     labels:
       - "traefik.enable=true"
-
-      - "traefik.http.routers.traefik.rule=Host(`traefik.prts.live`)"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=traefik-auth,secure-headers@file"
-      - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/run/secrets/traefik_basic_auth_credentials"
     networks:
       - proxy
       - crowdsec
@@ -50,5 +44,4 @@ networks:
     external: true
   crowdsec:
     external: true
-
 
