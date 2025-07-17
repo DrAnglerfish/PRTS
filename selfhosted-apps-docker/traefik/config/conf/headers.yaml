@@ -1,0 +1,114 @@
+http:
+  middlewares:
+    authentik:
+        forwardAuth:
+            address: http://authentik-server:9000/outpost.goauthentik.io/auth/traefik
+            trustForwardHeader: true
+            authResponseHeaders:
+                - X-authentik-username
+                - X-authentik-groups
+                - X-authentik-entitlements
+                - X-authentik-email
+                - X-authentik-name
+                - X-authentik-uid
+                - X-authentik-jwt
+                - X-authentik-meta-jwks
+                - X-authentik-meta-outpost
+                - X-authentik-meta-provider
+                - X-authentik-meta-app
+                - X-authentik-meta-version
+    secure-headers:
+      headers:
+        accessControlAllowMethods:                                             # Allowed CORS methods
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlMaxAge: 100                                               # Cache duration for preflight responses (in seconds)
+        hostsProxyHeaders:                                                     # Trust X-Forwarded-Host for proper routing
+          - "X-Forwarded-Host"
+        sslRedirect: true                                                      # Redirect all HTTP requests to HTTPS
+        stsSeconds: 63072000                                                   # HSTS: 2 years
+        stsIncludeSubdomains: true                                             # Apply HSTS to all subdomains
+        stsPreload: true                                                       # Eligible for Chrome preload list
+        forceSTSHeader: true                                                   # Force HSTS header even on HTTP
+        frameDeny: false                                                       # Don't deny all if using SAMEORIGIN instead
+        customFrameOptionsValue: "SAMEORIGIN"                                  # Allow framing only from same origin
+        contentTypeNosniff: true                                               # Prevent MIME type sniffing
+        customBrowserXSSValue: "mode=block"                                    # X-XSS-Protection=1; mode=block
+        browserXssFilter: true                                                 # Enable basic XSS filter in old browsers
+        referrerPolicy: "strict-origin-when-cross-origin"                      # Reduce referrer info leakage across origins
+        permissionsPolicy: "camera=(), geolocation=(), microphone=(), payment=(), usb=(), vr=()" # Restrict browser features (modern replacement for Feature-Policy)
+        customRequestHeaders:                                                  # Headers added to requests sent to the backend
+          X-Forwarded-Proto: https                                             # Inform backend that connection is HTTPS
+        customResponseHeaders:                                                 # Headers added to responses to the client
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"   # Disable indexing and translation
+          server: ""                                                           # Hide server identity
+    https-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+
+
+    real-ip-foo:
+      plugin:
+        real-ip:
+          Proxy:
+            - proxyHeadername: X-From-Cdn
+              proxyHeadervalue: mf-fun
+              realIP: X-Forwarded-For
+            - proxyHeadername: X-From-Cdn
+              proxyHeadervalue: mf-bar
+              realIP: Client-Ip
+              OverwriteXFF: false # default: false, v1.0.2 or above
+            - proxyHeadername: X-From-Cdn
+              proxyHeadervalue: cf-foo
+              realIP: Cf-Connecting-Ip
+              OverwriteXFF: false # default: false, v1.0.2 or above
+            - proxyHeadername: "*"
+              realIP: RemoteAddr
+
+    crowdsec:
+      plugin:
+        bouncer:
+          enabled: true
+          logLevel: INFO
+          updateIntervalSeconds: 15
+          updateMaxFailure: 0
+          defaultDecisionSeconds: 15
+          httpTimeoutSeconds: 10
+          crowdsecMode: stream
+          crowdsecAppsecEnabled: false
+          crowdsecAppsecHost: crowdsec:7422
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecUnreachableBlock: true
+          crowdsecLapiKey: NxacdrD2i8349LnnZJ88wQVJVO3WcuR8wolsXzKkyrM
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiScheme: http
+          crowdsecLapiTLSInsecureVerify: false
+          forwardedHeadersTrustedIPs:
+            # private class ranges
+            - 10.0.0.0/32
+            - 172.16.0.0/32
+            - 192.168.0.0/32
+            - 192.168.1.0/32
+            - 2600:8801:2b00:809e::/64
+            - ::1/64
+          clientTrustedIPs:
+            # private class ranges
+            - 10.0.0.0/32
+            - 172.16.0.0/32
+            - 192.168.0.0/32
+            - 192.168.1.0/32
+            - 2600:8801:2b00:809e::/64
+            - ::1/64
+#          forwardedHeadersCustomName: CF-Connecting-IP                                 # Cloudflare IP address header
+
+    cloudflarewarp:                                                                      # For Cloudflare real IP
+      plugin:                                                                            # For Cloudflare real IP
+        cloudflarewarp:                                                                  # For Cloudflare real IP
+          disableDefault: false                                                          # For Cloudflare real IP
+          trustip:                                                                       # For Cloudflare real IP
+            - "2400:cb00::/32"                                               
+
+
