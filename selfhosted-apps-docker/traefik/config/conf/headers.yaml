@@ -23,6 +23,7 @@ http:
           - GET
           - OPTIONS
           - PUT
+          - POST
         accessControlMaxAge: 100                                               # Cache duration for preflight responses (in seconds)
         hostsProxyHeaders:                                                     # Trust X-Forwarded-Host for proper routing
           - "X-Forwarded-Host"
@@ -34,12 +35,9 @@ http:
         frameDeny: false                                                       # Don't deny all if using SAMEORIGIN instead
         customFrameOptionsValue: "SAMEORIGIN"                                  # Allow framing only from same origin
         contentTypeNosniff: true                                               # Prevent MIME type sniffing
-        customBrowserXSSValue: "mode=block"                                    # X-XSS-Protection=1; mode=block
         browserXssFilter: true                                                 # Enable basic XSS filter in old browsers
         referrerPolicy: "strict-origin-when-cross-origin"                      # Reduce referrer info leakage across origins
         permissionsPolicy: "camera=(), geolocation=(), microphone=(), payment=(), usb=(), vr=()" # Restrict browser features (modern replacement for Feature-Policy)
-        customRequestHeaders:                                                  # Headers added to requests sent to the backend
-          X-Forwarded-Proto: https                                             # Inform backend that connection is HTTPS
         customResponseHeaders:                                                 # Headers added to responses to the client
           X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"   # Disable indexing and translation
           server: ""                                                           # Hide server identity
@@ -47,9 +45,6 @@ http:
       redirectScheme:
         scheme: https
         permanent: true
-
-
-
     real-ip-foo:
       plugin:
         real-ip:
@@ -109,6 +104,6 @@ http:
         cloudflarewarp:                                                                  # For Cloudflare real IP
           disableDefault: false                                                          # For Cloudflare real IP
           trustip:                                                                       # For Cloudflare real IP
-            - "2400:cb00::/32"                                               
+            - "2400:cb00::/32"                               
 
 
